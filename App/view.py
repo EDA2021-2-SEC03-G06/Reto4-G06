@@ -23,6 +23,10 @@
 import config as cf
 import sys
 import controller
+from tabulate import tabulate
+from DISClib.ADT.graph import gr, numEdges
+from DISClib.ADT import map as m
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 assert cf
 
@@ -33,6 +37,7 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+graphsfile,citiesfile,airportsfile = ("Skylines/routes_full.csv","Skylines/worldcities.csv","Skylines/airports_full.csv")
 
 def printMenu():
     print("Bienvenido")
@@ -43,6 +48,7 @@ def printMenu():
     print("5- Usar millas viajero")
     print("6- Cuantificar el efecto de un aeropuerto cerrado")
     print("7- Comparar con servicio web externo")
+    print("0- Salir")
 
 catalog = None
 
@@ -54,7 +60,26 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        catalogo = controller.init_catalogo()
+        ultimo,primero = controller.load_data(graphsfile,citiesfile,airportsfile,catalogo)
+        print("Numero de aeropuertos: ", gr.numVertices(catalogo["Vector"]))
+        print("Numero de aeropuertos: ", gr.numVertices(catalogo["AntiVector"]))
+        print("Numero de rutas: ", gr.numEdges(catalogo["Vector"]))
+        print("Numero de rutas: ", gr.numEdges(catalogo["AntiVector"]))
+        print("Total ciudades: ", m.size(catalogo["cities"]))
+        ultimo = me.getValue(m.get(catalogo["cities"],ultimo))
+        rta = [["Poblacion: ",ultimo["population"]],
+                ["Latitud: ",ultimo["lat"]],
+                ["Longitud: ",ultimo["lng"]]]
+        print(tabulate(rta,tablefmt='grid'))
+        primero = me.getValue(m.get(catalogo["airports"],primero))
+        rta = [["Nombre: ",primero["Name"]],
+                ["Latitud: ",primero["Latitude"]],
+                ["Longitud: ",primero["Longitude"]],
+                ["País: ", primero["Country"]],
+                ["Ciudad: ", primero["City"]]]
+        print(tabulate(rta,tablefmt='grid'))
+    
     elif int(inputs[0]) == 2:
         pass
     elif int(inputs[0]) == 3:
