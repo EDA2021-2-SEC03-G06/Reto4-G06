@@ -26,7 +26,17 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 
+# ___________________________________________________
+#  Variables
+# ___________________________________________________
 
+
+servicefile = 'bus_routes_50.csv'
+initialStation = None
+
+# ___________________________________________________
+#  Menu principal
+# ___________________________________________________
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
