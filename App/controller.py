@@ -32,49 +32,42 @@ del modelo en una sola respuesta.  Esta responsabilidad
 recae sobre el controlador.
 """
 
-# ___________________________________________________
-#  Inicializacion del catalogo
-# ___________________________________________________
+# Inicialización del Catálogo de libros
+def init_catalogo():
+    return model.init_catalogo()
 
-
-def init():
-    """
-    Llama la funcion de inicializacion  del modelo.
-    """
-    # analyzer es utilizado para interactuar con el modelo
-    analyzer = model.newAnalyzer()
-    return analyzer
-
-
-# ___________________________________________________
-#  Funciones para la carga de datos y almacenamiento
-#  de datos en los modelos
-# ___________________________________________________
-
-
-def loadServices(analyzer, servicesfile):
-    """
-    Carga los datos de los archivos CSV en el modelo.
-    Se crea un arco entre cada par de estaciones que
-    pertenecen al mismo servicio y van en el mismo sentido.
-
-    addRouteConnection crea conexiones entre diferentes rutas
-    servidas en una misma estación.
-    """
-    servicesfile = cf.data_dir + servicesfile
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+# Funciones para la carga de datos
+def load_data(graphsfile,citiesfile,airportsfile,catalogo):
+    graphsfile = cf.data_dir + graphsfile
+    input_file = csv.DictReader(open(graphsfile, encoding="utf-8"),
                                 delimiter=",")
-    lastservice = None
     for service in input_file:
-        if lastservice is not None:
-            sameservice = lastservice['ServiceNo'] == service['ServiceNo']
-            samedirection = lastservice['Direction'] == service['Direction']
-            samebusStop = lastservice['BusStopCode'] == service['BusStopCode']
-            if sameservice and samedirection and not samebusStop:
-                model.addStopConnection(analyzer, lastservice, service)
-        lastservice = service
-    model.addRouteConnections(analyzer)
-    return analyzer
+        
+        model.load_Graphs(service,catalogo)
+    
+    citiesfile = cf.data_dir + citiesfile
+    input_file = csv.DictReader(open(citiesfile, encoding="utf-8"),
+                                delimiter=",")
+    for service in input_file:
+        ultimo = service["city"]+"-"+service["country"]
+        centinela = False
+        model.loadcities(catalogo,service)
+
+    airportsfile = cf.data_dir + airportsfile
+    input_file = csv.DictReader(open(airportsfile, encoding="utf-8"),
+                                delimiter=",")
+    
+    centinela = True
+    for service in input_file:
+        if centinela:
+            primero = service["IATA"]
+            centinela = False
+        model.load_airports(catalogo,service)
+    return ultimo,primero
+
+    
+    
+# Funciones de ordenamiento
 
 # ___________________________________________________
 #  Funciones para consultas

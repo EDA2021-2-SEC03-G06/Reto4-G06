@@ -24,11 +24,11 @@
  * Dario Correal - Version inicial
  """
 
-
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
@@ -39,10 +39,81 @@ En este archivo definimos los TADs que vamos a usar y las operaciones
 de creacion y consulta sobre las estructuras de datos.
 """
 
-# -----------------------------------------------------
-#                       API
-# -----------------------------------------------------
+# Construccion de modelos
+def init_catalogo():
+    try:
+        catalogo = {}
+        catalogo["Vector"] = gr.newGraph(datastructure='ADJ_LIST',
+                                                directed=True,
+                                                size=14000,
+                                                comparefunction= None)
+        catalogo["AntiVector"] = gr.newGraph(datastructure='ADJ_LIST',
+                                                directed=False,
+                                                size=14000,
+                                                comparefunction= None)
+        catalogo["airports"] = m.newMap()
+        catalogo["cities"] = m.newMap()
+        catalogo["namesakes"] = m.newMap()
+        return catalogo
+    except Exception as exp:
+        error.reraise(exp, 'model:init_catalog')
 
+# Funciones para agregar informacion al catalogo
+def addStop(graph, stopid):
+    """
+    Adiciona una estación como un vertice del grafo
+    """
+    try:
+        if not gr.containsVertex(graph, stopid):
+            gr.insertVertex(graph, stopid)
+        return graph
+    except Exception as exp:
+        error.reraise(exp, 'model:addStop')
+
+def addConnection(graph, origin, destination, distance):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(graph, origin, destination)
+    if edge is None:
+        gr.addEdge(graph, origin, destination, distance)
+    return graph
+
+def load_Graphs(service,catalogo):
+    departure = service["Departure"]
+    destiny = service["Destination"]
+    distance = float(service["distance_km"])
+    addStop(catalogo["Vector"],departure)
+    addStop(catalogo["Vector"],destiny)
+    addConnection(catalogo["Vector"],departure,destiny,distance)
+    if gr.getEdge(catalogo["Vector"],destiny,departure) != None:
+        addStop(catalogo["AntiVector"],departure)
+        addStop(catalogo["AntiVector"],destiny)
+        addConnection(catalogo["AntiVector"],departure,destiny,distance)
+    return catalogo
+
+def loadcities(catalogo,ciudad):
+    city = ciudad["city"] + "-" + ciudad["country"]
+    ciudad["aeropuertos"] = lt.newList(datastructure="ARRAY_LIST")
+    m.put(catalogo["cities"],city,ciudad)
+
+    entry = m.get(map,ciudad["city"])
+    if entry is None:
+        datentry = lt.newList()
+    else:
+        datentry = me.getValue(entry)
+    lt.addLast(datentry, city)
+    m.put(catalogo["namesakes"], ciudad["city"], datentry)
+    
+    return catalogo
+
+def load_airports(catalogo,aeropuerto):
+    m.put(catalogo["airports"],aeropuerto["IATA"],aeropuerto)
+    city = aeropuerto['City'] + "-" + aeropuerto["Country"]
+    entry = m.get(catalogo["cities"],city)
+    if entry != None:
+        info = me.getValue(entry)
+        lt.addLast(info["aeropuertos"],aeropuerto["IATA"])
 
 def newAnalyzer():
     """ Inicializa el analizador
@@ -210,6 +281,18 @@ def compareStopIds(stop, keyvaluestop):
     else:
         return -1
 
+# Funciones utilizadas para comparar elementos dentro de una lista
+def compareStopIds(stop, keyvaluestop):
+    """
+    Compara dos estaciones
+    """
+    stopcode = keyvaluestop
+    if (stop == stopcode):
+        return 0
+    elif (stop > stopcode):
+        return 1
+    else:
+        return -1
 
 def compareroutes(route1, route2):
     """
