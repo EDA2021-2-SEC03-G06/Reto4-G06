@@ -59,6 +59,7 @@ def init_catalogo():
         error.reraise(exp, 'model:init_catalog')
 
 # Funciones para agregar informacion al catalogo
+#BORRA ESTO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def addStop(graph, stopid):
     """
     Adiciona una estación como un vertice del grafo
