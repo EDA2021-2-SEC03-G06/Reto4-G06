@@ -72,3 +72,5 @@ def load_data(graphsfile,citiesfile,airportsfile,catalogo):
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+def differenciation_city(ciudad, catalogo):
+    return model.differenciation_city(ciudad, catalogo)

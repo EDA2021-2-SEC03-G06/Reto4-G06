@@ -23,7 +23,7 @@
 import config as cf
 import sys
 import controller
-from tabulate import tabulate
+from tabulate import simple_separated_format, tabulate
 from DISClib.ADT.graph import gr, numEdges
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
@@ -93,7 +93,21 @@ while True:
     elif int(inputs[0]) == 2:
         pass
     elif int(inputs[0]) == 3:
-        pass
+        begin = input("De que ciudad desea iniciar? ")
+        begin_cities = controller.differenciation_city(begin,catalogo)
+        for city in range(lt.size(begin_cities)):
+            print(city, lt.getElement(begin_cities,city))
+        begin = int(input("¿En que numero se encuentra la ciudad que le interesa?"))
+        begin = lt.getElement(begin_cities,begin)
+        end = input("De que ciudad desea llegar? ")
+        end_cities = controller.differenciation_city(end,catalogo)
+        for city in range(lt.size(end_cities)):
+            print(city, lt.getElement(end_cities,city))
+        end = int(input("¿En que numero se encuentra la ciudad que le interesa?"))
+        end = lt.getElement(end_cities,end)
+        print("Aun no tenemos el requerimiento listo, pero ya solucionamos el problema de ciudades homonimas, para confirmarlo estas son las ciudades que le interesa: ")
+        print(begin)
+        print(end)
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:
