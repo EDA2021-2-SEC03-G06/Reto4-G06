@@ -74,3 +74,11 @@ def load_data(graphsfile,citiesfile,airportsfile,catalogo):
 # ___________________________________________________
 def differenciation_city(ciudad, catalogo):
     return model.differenciation_city(ciudad, catalogo)
+
+def more_edges(catalogo):
+    vector,airports = model.more_edges(catalogo["Vector"])
+    antivector = model.more_edges(catalogo["AntiVector"])[0]
+    return vector, antivector, airports
+
+def SCC(catalogo):
+    model.clusters(catalogo)

@@ -47,7 +47,7 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-graphsfile,citiesfile,airportsfile = ("Skylines/routes_full.csv","Skylines/worldcities.csv","Skylines/airports_full.csv")
+graphsfile,citiesfile,airportsfile = ("Skylines/routes-utf8-small.csv","Skylines/worldcities-utf8.csv","Skylines/airports-utf8-small.csv")
 
 def printMenu():
     print("Bienvenido")
@@ -91,9 +91,34 @@ while True:
         print(tabulate(rta,tablefmt='grid'))
     
     elif int(inputs[0]) == 2:
-        pass
+        vector, antivector, airports = controller.more_edges(catalogo)
+        print("Hay ", airports," aeropuertos interconectados")
+        lstkey = m.keySet(vector)
+        for airport in lt.iterator(lstkey):
+            current = m.get(catalogo["airports"],airport)
+            current = me.getValue(current)
+            print("-"*100)
+            print("IATA: ",airport)
+            print("Nombre: ",current["Name"])
+            print("Ciudad: ", current["City"])
+            print("Pais: ", current["Country"])
+            print("Conexiones: ", me.getValue(m.get(vector,airport)))
+            print("-"*100)
+        lstkey = m.keySet(antivector)
+        for airport in lt.iterator(lstkey):
+            current = m.get(catalogo["airports"],airport)
+            print(airport)
+            if current != None:
+                current = me.getValue(current)
+                print("-"*100)
+                print("IATA: ",airport)
+                print("Nombre: ",current["Name"])
+                print("Ciudad: ", current["City"])
+                print("Pais: ", current["Country"])
+                print("Conexiones: ", me.getValue(m.get(antivector,airport)))
+                print("-"*100)
     elif int(inputs[0]) == 3:
-        pass
+        controller.SCC(catalogo)
     elif int(inputs[0]) == 4:
         begin = input("De que ciudad desea iniciar? ")
         begin_cities = controller.differenciation_city(begin,catalogo)

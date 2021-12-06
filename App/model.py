@@ -31,6 +31,7 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.DataStructures import graphstructure as gp
 from DISClib.Utils import error as error
 assert config
 
@@ -124,7 +125,27 @@ def differenciation_city(ciudad, catalogo):
         cities = me.getValue(cities)
     return cities
 
+def more_edges(grafo):
+    lstvert = gp.vertices(grafo)
+    airports = lt.size(lstvert)
+    top_5 = m.newMap()
+    n = 0
+    while n < 5:
+        maxvert = None
+        maxdeg = 0
+        for vert in lt.iterator(lstvert):
+            degree = gp.degree(grafo,vert) + gp.outdegree(grafo,vert) + gp.indegree(grafo,vert)
+            if(degree > maxdeg) and not m.contains(top_5,vert):
+                maxvert = vert
+                maxdeg = degree
+        m.put(top_5,maxvert,maxdeg)
+        n+=1
+    return top_5, airports
 
+def clusters(catalogo):
+    SCC = scc.KosarajuSCC(catalogo["Vector"])
+    numero_SCC = SCC["components"]
+    print(SCC)
 
 # ==============================
 # Funciones Helper
