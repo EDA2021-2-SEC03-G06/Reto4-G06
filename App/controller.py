@@ -80,5 +80,7 @@ def more_edges(catalogo):
     antivector = model.more_edges(catalogo["AntiVector"])[0]
     return vector, antivector, airports
 
-def SCC(catalogo):
-    model.clusters(catalogo)
+def SCC(catalogo, airport1,airport2):
+    return model.clusters(catalogo,airport1,airport2)
+def near_route(catalogo,ciudad1,ciudad2):
+    return model.near_route(catalogo,ciudad1,ciudad2)

@@ -118,7 +118,11 @@ while True:
                 print("Conexiones: ", me.getValue(m.get(antivector,airport)))
                 print("-"*100)
     elif int(inputs[0]) == 3:
-        controller.SCC(catalogo)
+        airport1 = input("¿Desde dónde desea iniciar (IATA)? ")
+        airport2 = input("¿A dónde desea llegar (IATA)? ")
+        scc_numero, igual = controller.SCC(catalogo,airport1,airport2)
+        print("En el grafo hay ", scc_numero," componentes fuertemente conectados")
+        print("Estos dos aeropuertos "+igual+" pertenecen al mismo cluster.")
     elif int(inputs[0]) == 4:
         begin = input("De que ciudad desea iniciar? ")
         begin_cities = controller.differenciation_city(begin,catalogo)
@@ -132,9 +136,7 @@ while True:
             print(city, lt.getElement(end_cities,city))
         end = int(input("¿En que numero se encuentra la ciudad que le interesa?"))
         end = lt.getElement(end_cities,end)
-        print("Aun no tenemos el requerimiento listo, pero ya solucionamos el problema de ciudades homonimas, para confirmarlo estas son las ciudades que le interesa: ")
-        print(begin)
-        print(end)
+        controller.near_route(catalogo,begin,end)
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:

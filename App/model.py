@@ -25,6 +25,7 @@
  """
 
 import config
+from haversine import haversine as hv
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
@@ -92,6 +93,8 @@ def load_Graphs(service,catalogo):
 
 def loadcities(catalogo,ciudad):
     city = ciudad["city"] + "-" + ciudad["country"]
+    if ciudad["city"] == "Saint Petersburg":
+        print(city)
     ciudad["aeropuertos"] = lt.newList(datastructure="ARRAY_LIST")
     m.put(catalogo["cities"],city,ciudad)
     map = catalogo["namesakes"]
@@ -142,11 +145,70 @@ def more_edges(grafo):
         n+=1
     return top_5, airports
 
-def clusters(catalogo):
+def clusters(catalogo,airport1,airport2):
     SCC = scc.KosarajuSCC(catalogo["Vector"])
-    numero_SCC = SCC["components"]
     print(SCC)
+    numero_SCC = SCC["components"]
+    Existe = "NO"
+    if m.contains(SCC["idscc"],airport1) and m.contains(SCC["idscc"],airport2):
+        airport_1 = me.getValue(m.get(SCC["idscc"],airport1))
+        airport_2 = me.getValue(m.get(SCC["idscc"],airport2))
+        if airport_1 == airport_2:
+            Existe = "SI"
+    return numero_SCC, Existe
 
+def near_route(catalogo,ciudad1,ciudad2):
+    ciudad_1 = me.getValue(m.get(catalogo["cities"],ciudad1))
+    ciudad_2 = me.getValue(m.get(catalogo["cities"],ciudad2))
+    if lt.size(ciudad_1["aeropuertos"]) != 0:
+        aeropuerto_min_ciudad1 = None
+        distancia_min_ciudad1 = 1*10**100
+        for aeropuerto in lt.iterator(ciudad_1["aeropuertos"]):
+            airport = me.getValue(m.get(catalogo["airports"],aeropuerto))
+            ciudad = (float(me.getValue(m.get(catalogo["cities"],ciudad1))["lat"]),float(me.getValue(m.get(catalogo["cities"],ciudad1))["lng"]))
+            airport_lt = (float(airport["Latitude"]),float(airport["Longitude"]))
+            distancia = hv(ciudad,airport_lt)
+            if distancia < distancia_min_ciudad1:
+                distancia_min_ciudad1 = distancia
+                aeropuerto_min_ciudad1 = aeropuerto
+    else:
+        print("Pa que quieres hacer eso?1")
+        aeropuerto_min_ciudad1 = None
+        distancia_min_ciudad1 = 1*10**100
+        for aeropuerto in lt.iterator(m.keySet(catalogo["airports"])):
+            airport = me.getValue(m.get(catalogo["airports"],aeropuerto))
+            ciudad = (float(me.getValue(m.get(catalogo["cities"],ciudad1))["lat"]),float(me.getValue(m.get(catalogo["cities"],ciudad1))["lng"]))
+            airport_lt = (float(airport["Latitude"]),float(airport["Longitude"]))
+            distancia = hv(ciudad,airport_lt)
+            if distancia < distancia_min_ciudad1:
+                distancia_min_ciudad1 = distancia
+                aeropuerto_min_ciudad1 = aeropuerto
+    if  lt.size(ciudad_2["aeropuertos"]) != 0:
+        aeropuerto_min_ciudad2 = None
+        distancia_min_ciudad2 = 1*10*100
+        for aeropuerto in lt.iterator(ciudad_2["aeropuertos"]):
+            airport = me.getValue(m.get(catalogo["airports"],aeropuerto))
+            ciudad = (float(me.getValue(m.get(catalogo["cities"],ciudad2))["lat"]),float(me.getValue(m.get(catalogo["cities"],ciudad2))["lng"]))
+            airport_lt = (float(airport["Latitude"]),float(airport["Longitude"]))
+            distancia = hv(ciudad,airport_lt)
+            if distancia < distancia_min_ciudad2:
+                distancia_min_ciudad2 = distancia
+                aeropuerto_min_ciudad2 = aeropuerto
+    else:
+        print("Pa que quieres hacer eso?2")
+        aeropuerto_min_ciudad2 = None
+        distancia_min_ciudad2 = 1*10**100
+        for aeropuerto in lt.iterator(catalogo["airports"]):
+            airport = me.getValue(m.get(catalogo["airports"],aeropuerto))
+            ciudad = (float(me.getValue(m.get(catalogo["cities"],ciudad2))["lat"]),float(me.getValue(m.get(catalogo["cities"],ciudad2))["lng"]))
+            airport_lt = (float(airport["Latitude"]),float(airport["Longitude"]))
+            distancia = hv(ciudad,airport_lt)
+            if distancia < distancia_min_ciudad2:
+                distancia_min_ciudad2 = distancia
+                aeropuerto_min_ciudad2 = aeropuerto
+    mst = djk.Dijkstra(catalogo["Vector"],aeropuerto_min_ciudad1)
+    print(mst)
+    
 # ==============================
 # Funciones Helper
 # ==============================
