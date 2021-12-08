@@ -181,12 +181,15 @@ def edges(graph):
         lstresp = lt.newList('SINGLE_LINKED', e.compareedges)
         for lstedge in lt.iterator(lstmap):
             for edge in lt.iterator(lstedge):
-                #lt.addLast(lstresp, edge) Si no funciona edge al grafo dirigido:
-                #186-189 y descomentar 184
+                lt.addLast(lstresp, edge) 
+                #Si no funciona edge al grafo dirigido:
+                #187-190 y descomentar 184
+                """
                 if (graph['directed']):
                     lt.addLast(lstresp, edge)
                 elif (not lt.isPresent(lstresp, edge)):
                     lt.addLast(lstresp, edge)
+                """
         return lstresp
     except Exception as exp:
         error.reraise(exp, 'ajlist:edges')

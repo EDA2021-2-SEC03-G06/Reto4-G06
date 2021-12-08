@@ -93,8 +93,6 @@ def load_Graphs(service,catalogo):
 
 def loadcities(catalogo,ciudad):
     city = ciudad["city"] + "-" + ciudad["country"]
-    if ciudad["city"] == "Saint Petersburg":
-        print(city)
     ciudad["aeropuertos"] = lt.newList(datastructure="ARRAY_LIST")
     m.put(catalogo["cities"],city,ciudad)
     map = catalogo["namesakes"]
@@ -198,7 +196,7 @@ def near_route(catalogo,ciudad1,ciudad2):
         print("Pa que quieres hacer eso?2")
         aeropuerto_min_ciudad2 = None
         distancia_min_ciudad2 = 1*10**100
-        for aeropuerto in lt.iterator(catalogo["airports"]):
+        for aeropuerto in lt.iterator(m.keySet(catalogo["airports"])):
             airport = me.getValue(m.get(catalogo["airports"],aeropuerto))
             ciudad = (float(me.getValue(m.get(catalogo["cities"],ciudad2))["lat"]),float(me.getValue(m.get(catalogo["cities"],ciudad2))["lng"]))
             airport_lt = (float(airport["Latitude"]),float(airport["Longitude"]))
@@ -207,8 +205,11 @@ def near_route(catalogo,ciudad1,ciudad2):
                 distancia_min_ciudad2 = distancia
                 aeropuerto_min_ciudad2 = aeropuerto
     rutas = djk.Dijkstra(catalogo["Vector"],aeropuerto_min_ciudad1)
-    print(rutas)
+    camino_min = djk.pathTo(rutas,aeropuerto_min_ciudad2)
     
+
+    return camino_min,(distancia_min_ciudad1+distancia_min_ciudad2)
+
 # ==============================
 # Funciones Helper
 # ==============================

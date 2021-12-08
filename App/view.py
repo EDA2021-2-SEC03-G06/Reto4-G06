@@ -124,6 +124,7 @@ while True:
         scc_numero, igual = controller.SCC(catalogo,airport1,airport2)
         print("En el grafo hay ", scc_numero," componentes fuertemente conectados")
         print("Estos dos aeropuertos "+igual+" pertenecen al mismo cluster.")
+    
     elif int(inputs[0]) == 4:
         begin = input("De que ciudad desea iniciar? ")
         begin_cities = controller.differenciation_city(begin,catalogo)
@@ -135,9 +136,25 @@ while True:
         end_cities = controller.differenciation_city(end,catalogo)
         for city in range(1,lt.size(end_cities)+1):
             print(city, lt.getElement(end_cities,city))
-        end = int(input("¿En que numero se encuentra la ciudad que le interesa?"))
+        end = int(input("¿En que número se encuentra la ciudad que le interesa?"))
         end = lt.getElement(end_cities,end)
-        controller.near_route(catalogo,begin,end)
+        lt_route,distance_airports = controller.near_route(catalogo,begin,end)
+
+        km_total = distance_airports
+        begin = lt.getElement(lt_route,1)["vertexA"]
+        end = lt.getElement(lt_route,(lt.size(lt_route)))["vertexB"]
+        print("Aeropuerto de origen: "+begin)
+        print("Aeropuerto de destino: "+end)
+        print("Recorrido de la ruta: ")
+        for edge in lt.iterator(lt_route):
+            km = edge["weight"]
+            km_total+=km
+            print("Desde:"+edge["vertexA"]+" hasta:"+edge["vertexB"]+"-> KM:",km)
+        print("La cantidad de kilometros totales para este recorrido, fue de: ",(round(km_total,2)))
+
+
+
+
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:
