@@ -89,6 +89,7 @@ while True:
                 ["País: ", primero["Country"]],
                 ["Ciudad: ", primero["City"]]]
         print(tabulate(rta,tablefmt='grid'))
+        print("Aeropuertos: ",m.size(catalogo["airports"]))
     
     elif int(inputs[0]) == 2:
         vector, antivector, airports = controller.more_edges(catalogo)
