@@ -137,7 +137,7 @@ def more_edges(grafo):
         maxvert = None
         maxdeg = 0
         for vert in lt.iterator(lstvert):
-            degree = gp.degree(grafo,vert) + gp.outdegree(grafo,vert) + gp.indegree(grafo,vert)
+            degree = gp.outdegree(grafo,vert) * gp.indegree(grafo,vert)
             if(degree > maxdeg) and not m.contains(top_5,vert):
                 maxvert = vert
                 maxdeg = degree
@@ -206,8 +206,8 @@ def near_route(catalogo,ciudad1,ciudad2):
             if distancia < distancia_min_ciudad2:
                 distancia_min_ciudad2 = distancia
                 aeropuerto_min_ciudad2 = aeropuerto
-    mst = djk.Dijkstra(catalogo["Vector"],aeropuerto_min_ciudad1)
-    print(mst)
+    rutas = djk.Dijkstra(catalogo["Vector"],aeropuerto_min_ciudad1)
+    print(rutas)
     
 # ==============================
 # Funciones Helper
