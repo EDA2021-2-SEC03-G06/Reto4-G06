@@ -33,7 +33,9 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim as pm
 from DISClib.DataStructures import graphstructure as gp
+from DISClib.ADT import queue as cuak
 from DISClib.Utils import error as error
 assert config
 
@@ -240,6 +242,71 @@ def recursive_airport(grafo,salidas,iata):
     return salidas
 
 
+def more_cities(catalogo,mill):
+    
+    prim = pm.PrimMST(catalogo["AntiVector"])
+    mst = pm.edgesMST(catalogo["AntiVector"],prim)
+    mst = mst["mst"]
+    actual_mst = lt.newList(datastructure="ARRAY_LIST")
+    weight = 0
+    for current in lt.iterator(mst):
+        lt.addLast(actual_mst,current)
+        weight += current["weight"]
+    max_weight = 0
+    max_elements = 0
+    for element in lt.iterator(mst):
+        way, km = serch_continue(mst,element)
+        if lt.size(way) > max_weight:
+            max_weight = lt.size(way)
+            max_elements = way
+
+    print(max_elements)
+    millas = (km*1.6)/2-mill
+    return actual_mst, km, millas, max_elements
+
+def serch_continue(mst,element):
+    way = lt.newList()
+    lt.addLast(way,element["vertexA"])
+    searching = element["vertexB"]
+    km = element["weight"]
+    for element2 in lt.iterator(mst):
+        if searching == element2["vertexA"] and lt.isPresent(way,searching) == 0:
+            lt.addLast(way,searching)
+            searching = element2["vertexB"]
+            km += element2["weight"]
+    lt.addLast(way,searching)
+    return way, km
+#=====================================================================
+#Cementerio, Donde conmemoramos a los codigos caidos
+#=====================================================================
+"""
+if searching == element2["vertexA"] and not lt.isPresent(aux,searching):
+    lt.addLast(way,element2["vertexB"])
+    lt.addLast(aux,searching)
+    searching = element2["vertexB"]
+return way
+"""
+
+"""
+actual_mst = lt.newList(datastructure="ARRAY_LIST")
+total_weight = 0
+for elemento in lt.iterator(mst):
+    lt.addLast(actual_mst,elemento)
+    total_weight += elemento["weight"]
+print(total_weight)
+print(actual_mst)
+"""
+"""
+actual_mst = lt.newList(datastructure="ARRAY_LIST")
+print(prim)
+print("-"100)
+print(mst)
+while not cuak.isEmpty(mst):
+    current = cuak.dequeue(mst)
+    lt.addLast(actual_mst,current)
+print("-"100)
+print(actual_mst)
+"""
 # ==============================
 # Funciones Helper
 # ==============================

@@ -152,11 +152,17 @@ while True:
             print("Desde:"+edge["vertexA"]+" hasta:"+edge["vertexB"]+"-> KM:",km)
         print("La cantidad de kilometros totales para este recorrido, fue de: ",(round(km_total,2)))
 
-
-
-
     elif int(inputs[0]) == 5:
-        pass
+        mill = float(input("Con cuantas millas cuenta: "))
+        mst,weight,millas,rama_larga = controller.long_route(catalogo,mill)
+        print("¡¡¡MST!!!")
+        for edge in lt.iterator(mst):
+            print("arranca desde: ",edge["vertexA"]," Hasta: ",edge["vertexB"]," Con una distancia de: ",edge["weight"])
+        print("la rama mas larga tenia: ",weight," mll")
+        print("Por ende, faltaron/sobraron: ",millas)
+        print("Esta rama es: ")
+        for aeropuerto in range(1,lt.size(rama_larga)):
+            print("arranca desde: ",lt.getElement(rama_larga,aeropuerto)," Hasta: ",lt.getElement(rama_larga,aeropuerto+1))
     elif int(inputs[0]) == 6:
         iata = input("¿Cuál aeropuerto desea cerrar (IATA)?: ")
         afectados = controller.airport_closed(catalogo,iata)
