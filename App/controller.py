@@ -84,3 +84,5 @@ def SCC(catalogo, airport1,airport2):
     return model.clusters(catalogo,airport1,airport2)
 def near_route(catalogo,ciudad1,ciudad2):
     return model.near_route(catalogo,ciudad1,ciudad2)
+def long_route(catalogo,mill):
+    return model.more_cities(catalogo,mill)
