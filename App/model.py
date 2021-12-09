@@ -25,6 +25,7 @@
  """
 
 import config
+import sys
 from haversine import haversine as hv
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -35,6 +36,9 @@ from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.DataStructures import graphstructure as gp
 from DISClib.Utils import error as error
 assert config
+
+sys.setrecursionlimit(1000**3)
+
 
 """
 En este archivo definimos los TADs que vamos a usar y las operaciones
@@ -209,6 +213,32 @@ def near_route(catalogo,ciudad1,ciudad2):
     
 
     return camino_min,(distancia_min_ciudad1+distancia_min_ciudad2)
+
+def airport_closed(catalogo,iata):
+    grafo = catalogo["Vector"]
+    adyacentes = gp.adjacents(grafo,iata)
+    salidas = lt.newList()
+    for vertex in lt.iterator(adyacentes):
+        if gp.getEdge(grafo, vertex, iata)!=None:
+            lt.addLast(salidas,vertex)
+    first_vertex = lt.getElement(salidas,1)
+    salidas_finales = recursive_airport(grafo,salidas,first_vertex)
+
+    return salidas_finales
+
+def recursive_airport(grafo,salidas,iata):
+    adyacentes = gp.adjacents(grafo,iata)
+    segunda = lt.newList()
+    for vertex in lt.iterator(adyacentes):
+        if gp.getEdge(grafo, vertex, iata)!=None:
+            lt.addLast(segunda,vertex)
+    if segunda != None:
+        for aereo_2 in lt.iterator(segunda):
+            if lt.isPresent(salidas,aereo_2) == 0:
+                lt.addLast(salidas,aereo_2)
+                recursive_airport(grafo,salidas,aereo_2)
+    return salidas
+
 
 # ==============================
 # Funciones Helper

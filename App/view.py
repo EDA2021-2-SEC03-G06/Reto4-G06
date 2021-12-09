@@ -158,7 +158,11 @@ while True:
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:
-        pass
+        iata = input("¿Cuál aeropuerto desea cerrar (IATA)?: ")
+        afectados = controller.airport_closed(catalogo,iata)
+        print("Los afectados son: ")
+        for vertex in lt.iterator(afectados):
+            print("->"+vertex)
     elif int(inputs[0]) == 7:
         pass
     else:
